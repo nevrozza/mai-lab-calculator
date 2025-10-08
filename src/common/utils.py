@@ -1,7 +1,6 @@
-import inspect
-
 import colorama
-
+import os.path
+from inspect import currentframe
 from src.constants import IS_DEBUG_MODE, DEBUG_TAG, WARNING_TAG
 
 
@@ -15,14 +14,14 @@ def debug(message):
     if IS_DEBUG_MODE:
         tag = DEBUG_TAG
 
-        # https://github.com/inducer/pyopencl/blob/041fa5d8c6bc46c62f852c785d143a97cfb795c3/pyopencl/tools.py#L566
-        current_frame = inspect.currentframe()
+        # https://stackoverflow.com/questions/12997687/how-to-get-python-caller-object-information
+        current_frame = currentframe()
         if current_frame and current_frame.f_back:  # safe-call (?.) from kotlin
             caller_frame = current_frame.f_back
             function_name = caller_frame.f_code.co_name
-            filename = caller_frame.f_code.co_filename
+            filename = os.path.basename(caller_frame.f_code.co_filename)  # to avoid `filename`.split("/")[-1]
             line_number = caller_frame.f_lineno
-            tag += f" {filename.split("/")[-1]}:{line_number} ({function_name})"
+            tag += f" {filename}:{line_number} ({function_name})"
 
         tagged_print(color=colorama.Fore.CYAN, tag=tag, message=message)
 
