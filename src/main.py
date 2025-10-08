@@ -2,9 +2,11 @@ import colorama
 from colorama import Fore
 
 from src.common.tokens.tokenization import easy_tokenize
+from src.python_require import assert_python_version
 
 
 def main() -> None:
+    assert_python_version()
     colorama.init()
     # easy_tokenize()
     # print(get_token_type("24").value * 2)

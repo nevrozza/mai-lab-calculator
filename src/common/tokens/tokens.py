@@ -36,7 +36,7 @@ class TOKEN_TYPES(Enum):
     EOF = "EOF"
 
 
-def get_token_type(element: str) -> Token:
+def get_token(element: str) -> Token:
     """
     Возвращает Token по строке
     :param element: число или знак
@@ -44,7 +44,7 @@ def get_token_type(element: str) -> Token:
     """
     element = element.replace(",", ".")
 
-    if element.removeprefix('-').isdigit():  # TODO: regex
+    if element.isdigit():  # TODO: regex
         if '.' in element:
             value = float(element)
         else:
