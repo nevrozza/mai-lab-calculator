@@ -1,7 +1,6 @@
 import colorama
 from colorama import Fore
 
-from src.common.tokens.tokenization import easy_tokenize
 from src.python_require import assert_python_version
 
 
@@ -14,7 +13,6 @@ def main() -> None:
     Обязательнная составляющая программ, которые сдаются. Является точкой входа в приложение
     :return: Данная функция ничего не возвращает
     """
-    easy_tokenize("10 / 4 + -5 * 2")
     # target, degree = map(int, input("Введите два числа разделенные пробелом: ").split(" "))
     #
     # result = power_function(target=target, power=degree)

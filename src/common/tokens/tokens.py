@@ -2,7 +2,7 @@ from enum import Enum
 from dataclasses import dataclass
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class Token:
     """
     Дата класс, хранящий данные о токене (тип и значение)
@@ -34,22 +34,3 @@ class TOKEN_TYPES(Enum):
     MUL = "*"
     DIV = "/"
     EOF = "EOF"
-
-
-def get_token(element: str) -> Token:
-    """
-    Возвращает Token по строке
-    :param element: число или знак
-    :return Token:
-    """
-    element = element.replace(",", ".")
-
-    if element.isdigit():  # TODO: regex
-        if '.' in element:
-            value = float(element)
-        else:
-            value = int(element)
-
-        return Token(TOKEN_TYPES.NUM, value)
-    else:
-        return Token(TOKEN_TYPES(element))

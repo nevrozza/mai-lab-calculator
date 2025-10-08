@@ -1,4 +1,4 @@
-from src.common.tokens.tokenization import easy_tokenize
+from src.common.tokens.tokenizators.EasyTokenizator import EasyTokenizator
 from src.common.tokens.tokens import Token, TOKEN_TYPES
 from src.common.utils import CalcError, debug, warning
 
@@ -85,6 +85,6 @@ class CalculatorE1:
         return self.tokens[self.pos]
 
 
-warning(CalculatorE1().solve(easy_tokenize("10 / 4 + -5 * 2")))
-warning(CalculatorE1().solve(easy_tokenize("10 / 4 - -5 * 2")))  # !!
-warning(CalculatorE1().solve(easy_tokenize("10 / 4 - - -5 * 2")))  # !!
+warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 + -5 * 2")))
+warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
+warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!
