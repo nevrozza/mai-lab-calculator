@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod
+from re import Pattern
 
 from src.common.tokens.tokens import Token, TOKEN_TYPES
 from src.common.utils import CalcError
 
 
 class Tokenizator(ABC):
-    """docstring"""
+    """
+    Абстрактный класс для токенизаторов
+
+    Реализует общую логику токенизации
+    """
 
     def __init__(self):
         self.tokens: list[Token] = []
@@ -15,24 +20,36 @@ class Tokenizator(ABC):
     @abstractmethod
     def tokenize(self, expr: str) -> list[Token]:
         """
+        Переводит выражение в список токенов
 
-        :param expr:
+        :param expr: Строка с выражением
+        :return: Список токенов из выражения
         """
+
         pass
 
     def _reinit(self, expr: str):
-        """"""
+        """
+        Переинициализирует токенизатор для нового выражения
+        :param expr: Строка с выражением
+        :return: Данная функция ничего не возвращает
+        :raises CalcError: Если пустой ввод
+        """
         if not expr.strip():
             raise CalcError("Пустой ввод")
         self.tokens.clear()
         self.pos = 0
         self.expr = expr
 
-    def _add_to_tokens(self, element: str):
-        """Fuckin' refactoring"""
+    def _add_token(self, element: str):
         """
-        :param element: число или символ
-        :return: список токенов (2 токена, если есть унарный минус)
+        Преобразовывает элемент в токен(ы) и добавляет его в self.tokens
+
+        ВАЖНО:
+        - Число с унарным минусом преобразуется в два токена: MINUS и abs(NUM)
+        - Запятые меняются на точки
+
+        :param element: Элемент для преобразования (число, символ)
         """
 
         element = element.replace(",", ".")
@@ -47,11 +64,16 @@ class Tokenizator(ABC):
             self.tokens.append(Token(TOKEN_TYPES(element)))
 
     def _get_next_element(self) -> str | None:
-        """"""
+        """
+        Извлекает следующий элемент выражения с использованием regex паттерна.
+
+        :return: Элемент или None, если достигли последнего элемента
+        :raises CalcError: Если не найден следующий элемент.
+        """
         if self.pos >= len(self.expr):  # for `outside` while cycle
             return None
 
-        matched = self._get_token_regex().match(self.expr, self.pos)
+        matched = self._token_regex.match(self.expr, self.pos)
         if not matched:
             raise CalcError(f"Некорректный ввод около: '{self.expr[self.pos:]}'")
 
@@ -59,12 +81,23 @@ class Tokenizator(ABC):
         self.pos = matched.end()
         return element
 
+    @property
     @abstractmethod
-    def _get_token_regex(self):
-        """"""
+    def _token_regex(self) -> Pattern[str]:
+        """:return: Regex паттерн для деления выражения на элементы"""
         pass
 
     @abstractmethod
     def _simplify_tokens(self) -> list[Token]:
-        """"""
+        """
+        Упрощает токены согласно правилам математики
+
+        Примеры:
+            - "---" -> "-"
+            - "+-"  -> "-"
+            - "++"  -> "+"
+
+        O(N), клянусь
+        :return: Список токенов с упрощением
+        """
         pass

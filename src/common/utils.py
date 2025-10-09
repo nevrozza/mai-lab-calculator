@@ -34,8 +34,8 @@ def warning(message):
 def tagged_print(color, tag: str, message):
     """
     Вывод с цветным тегом
-    :param color: цвет тега
-    :param tag: текст тега
-    :param message: сообщение
+    :param color: Цвет тега
+    :param tag: Текст тега
+    :param message: Сообщение
     """
     print(color + f"[{tag}]" + colorama.Fore.RESET + f" {message}")

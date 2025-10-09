@@ -1,3 +1,5 @@
+from re import Pattern
+
 from src.common.tokens.regex import EASY_TOKEN_RE
 from src.common.tokens.tokenizators.Tokenizator import Tokenizator
 from src.common.tokens.tokens import Token, TOKEN_TYPES
@@ -6,26 +8,20 @@ from src.common.utils import debug, warning
 
 class EasyTokenizator(Tokenizator):
     """
-    *docstring*
+    Токенизатор для Easy задачек
     """
 
     def tokenize(self, expr: str) -> list[Token]:
-        """
-        # TODO дока
-        Используется для задачек Easy
-        :param expr: выражение для токенизации
-        :return: список токенов
-        """
-
         self._reinit(expr)
 
         while (element := self._get_next_element()) is not None:
-            self._add_to_tokens(element)
+            self._add_token(element)
 
-        self.tokens.append(Token(TOKEN_TYPES.EOF))
+        self.tokens.append(Token(TOKEN_TYPES.EOF))  # TODO: рассмотреть его необходимость
 
         debug(expr)
         debug(self.tokens)
+
         simplified_tokens = self._simplify_tokens()
         debug(f"После упрощения: ${simplified_tokens}")
 
@@ -34,13 +30,12 @@ class EasyTokenizator(Tokenizator):
 
         return simplified_tokens
 
+    @property
+    def _token_regex(self) -> Pattern[str]:
+        return EASY_TOKEN_RE
+
     # noinspection PyMethodMayBeStatic
     def _simplify_tokens(self) -> list[Token]:
-        """
-        O(N), клянусь
-        :param tokens:
-        :return:
-        """
         result = []
         i = 0
 
@@ -68,7 +63,3 @@ class EasyTokenizator(Tokenizator):
                 i += 1
 
         return result
-
-    def _get_token_regex(self):
-        """"""
-        return EASY_TOKEN_RE
