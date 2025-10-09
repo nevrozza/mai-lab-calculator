@@ -1,5 +1,7 @@
-from src.power import power_function
-from src.constants import SAMPLE_CONSTANT
+import colorama
+from colorama import Fore
+
+from src.python_require import assert_python_version
 
 
 def main() -> None:
@@ -7,14 +9,17 @@ def main() -> None:
     Обязательнная составляющая программ, которые сдаются. Является точкой входа в приложение
     :return: Данная функция ничего не возвращает
     """
+    assert_python_version()
+    colorama.init()
 
-    target, degree = map(int, input("Введите два числа разделенные пробелом: ").split(" "))
+    labs_line = (Fore.GREEN + "E1" + " /"
+                 + Fore.RED + "/ " + "M1" + Fore.MAGENTA + " | " + "КАЗИК" + Fore.RESET)
 
-    result = power_function(target=target, power=degree)
+    variant = input("Введите вариант лабубы:\n"
+                    + labs_line + "\n"
+                    ).upper()
+    print(variant)  # TODO: чтоб не ругался pre-commit
 
-    print(result)
-
-    print(SAMPLE_CONSTANT)
 
 if __name__ == "__main__":
     main()
