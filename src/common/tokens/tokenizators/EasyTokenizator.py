@@ -56,7 +56,7 @@ class EasyTokenizator(Tokenizator):
                     i += 1
                 if sign == -1:
                     result.append(Token(TOKEN_TYPES.MINUS))
-                else:
+                elif result:  # Добавляем плюс, только если он НЕ в начале выражения
                     result.append(Token(TOKEN_TYPES.PLUS))
             else:
                 result.append(self.tokens[i])

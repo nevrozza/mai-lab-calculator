@@ -39,7 +39,7 @@ class CalculatorE1:
         self.tokens = tokens
         self.pos = 0
         result = self._expr()
-        debug(self._current_token())  # TODO
+        debug(self._current_token())  # print EOF  TODO: пока оставим, но мб не нужно это всё...
         return result
 
     def _expr(self) -> int | float:
@@ -106,6 +106,6 @@ class CalculatorE1:
         return self.tokens[self.pos]
 
 
-warning(CalculatorE1().solve(EasyTokenizator().tokenize("+ 10 / 4 + -5 * 2")))
-warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
-warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!
+warning(CalculatorE1().solve(EasyTokenizator().tokenize("+10/4-5*2+7.5")))
+# warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
+# warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!

@@ -53,11 +53,12 @@ class Tokenizator(ABC):
         """
 
         element = element.replace(",", ".")
-        if element.replace("-", "").replace(".", "").isdigit():
+        if element.replace("-", "").replace("+", "").replace(".", "").isdigit():  # TODO: Regex
             value = float(element) if '.' in element else int(element)
             num_token = Token(TOKEN_TYPES.NUM, abs(value))
-            if value < 0:
-                self.tokens += [Token(TOKEN_TYPES.MINUS), num_token]  # Handler for unary minus
+
+            if (unary := element[0]) in (TOKEN_TYPES.MINUS.value, TOKEN_TYPES.PLUS.value):
+                self.tokens += [Token(TOKEN_TYPES(unary)), num_token]
             else:
                 self.tokens.append(num_token)
         else:
