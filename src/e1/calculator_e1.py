@@ -1,6 +1,7 @@
-from src.common.tokens.tokenizators.EasyTokenizator import EasyTokenizator
-from src.common.tokens.tokens import Token, TOKEN_TYPES
-from src.common.utils import CalcError, debug, warning
+from src.common.utils.errors import CalcError
+from src.common.utils.messages import debug, warning
+from src.e1.easy_tokenizator import EasyTokenizator
+from src.common.tokenization.tokens import Token, TOKEN_TYPES
 
 
 class CalculatorE1:
