@@ -12,11 +12,8 @@ def main() -> None:
     assert_python_version()
     colorama.init()
 
-    e_labs = ["E1", "E2", "E3", "E4"]
-    m_labs = ["M1", "M2", "M3", "M4"]
-
-    labs_line = (Fore.GREEN + ' '.join([e for e in e_labs]) + " /"
-                 + Fore.RED + "/ " + ' '.join([m for m in m_labs]) + Fore.RESET)
+    labs_line = (Fore.GREEN + "E1" + " /"
+                 + Fore.RED + "/ " + "M1" + Fore.MAGENTA + " | " + "КАЗИК" + Fore.RESET)
 
     variant = input("Введите вариант лабубы:\n"
                     + labs_line + "\n"
