@@ -1,19 +1,16 @@
+from src.common.calculator import Calculator
 from src.common.utils.errors import CalcError
 from src.common.utils.messages import debug, warning
 from src.e1.easy_tokenizator import EasyTokenizator
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
 
 
-class CalculatorE1:
+class CalculatorE1(Calculator):
     """
     Калькулятор для обработки выражений уровня E1 с использованием рекурсивного спуска.
 
     Поддерживает базовые арифметические операции: +, -, *, /
     """
-
-    def __init__(self):
-        self.tokens = []
-        self.pos = 0
 
     def solve(self, tokens: list[Token]) -> int | float:  # term + -
         """
@@ -97,14 +94,6 @@ class CalculatorE1:
             return sign * token.value
         else:
             raise CalcError("Unexpected error")  # TODO
-
-    def _next(self):
-        """Перемещает позицию на +1 [токен]"""
-        self.pos += 1
-
-    def _current_token(self) -> Token:
-        """:return Возвращает текущий токен:"""
-        return self.tokens[self.pos]
 
 
 warning(CalculatorE1().solve(EasyTokenizator().tokenize("+10/4-5*2+7.5")))
