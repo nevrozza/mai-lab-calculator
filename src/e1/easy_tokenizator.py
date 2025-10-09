@@ -1,9 +1,9 @@
 from re import Pattern
 
-from src.common.tokens.regex import EASY_TOKEN_RE
-from src.common.tokens.tokenizators.Tokenizator import Tokenizator
-from src.common.tokens.tokens import Token, TOKEN_TYPES
-from src.common.utils import debug, warning
+from src.common.tokenization.tokenizator import Tokenizator
+from src.common.tokenization.tokens import Token, TOKEN_TYPES
+from src.common.utils.messages import debug, warning
+from src.common.utils.vars import EASY_TOKEN_RE
 
 
 class EasyTokenizator(Tokenizator):

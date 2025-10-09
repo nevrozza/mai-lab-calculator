@@ -25,7 +25,7 @@ class Token:
 # noinspection PyPep8Naming
 class TOKEN_TYPES(Enum):
     """
-        ENUM класс, который используется для хранения констант:
+        ENUM класс, который используется для хранения констант(!!):
         NUM, PLUS, MINUS, MUL(*), DIV(/), EOF
     """
     NUM = "NUM"

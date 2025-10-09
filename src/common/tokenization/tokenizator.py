@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from re import Pattern
 
-from src.common.tokens.tokens import Token, TOKEN_TYPES
-from src.common.utils import CalcError
+from src.common.tokenization.tokens import Token, TOKEN_TYPES
+from src.common.utils.errors import CalcError
 
 
 class Tokenizator(ABC):
@@ -43,7 +43,7 @@ class Tokenizator(ABC):
 
     def _add_token(self, element: str):
         """
-        Преобразовывает элемент в токен(ы) и добавляет его в self.tokens
+        Преобразовывает элемент в токен(ы) и добавляет его в self.tokenization
 
         ВАЖНО:
         - Число с унарным минусом преобразуется в два токена: MINUS и abs(NUM)

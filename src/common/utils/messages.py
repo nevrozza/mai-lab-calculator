@@ -1,12 +1,7 @@
 import colorama
 import os.path
 from inspect import currentframe
-from src.constants import IS_DEBUG_MODE, DEBUG_TAG, WARNING_TAG
-
-
-class CalcError(Exception):
-    """*Понятные ошибки калькулятора.*"""
-    pass
+from src.common.utils.vars import IS_DEBUG_MODE, DEBUG_TAG, WARNING_TAG
 
 
 def debug(message):
