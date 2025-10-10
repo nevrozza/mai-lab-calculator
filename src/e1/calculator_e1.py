@@ -45,15 +45,15 @@ class CalculatorE1(Calculator):
         result = self._term()
         while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
             debug(self._current_token())
-            sign_mul = 0
+            sign = 1
             match self._current_token().type:
                 case TOKEN_TYPES.PLUS:
-                    sign_mul = 1
+                    sign = 1
                 case TOKEN_TYPES.MINUS:
-                    sign_mul = -1
+                    sign = -1
 
             self._next()
-            result += sign_mul * self._term()
+            result += sign * self._term()
         return result
 
     def _term(self) -> int | float:  # factor * /
