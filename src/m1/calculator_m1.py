@@ -2,6 +2,7 @@ from src.common.calculator import Calculator
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
 from src.common.utils.errors import CalcError
 from src.common.utils.messages import debug
+from src.m1.medium_tokenizator import MediumTokenizator
 
 
 class CalculatorM1(Calculator):
@@ -79,7 +80,7 @@ class CalculatorM1(Calculator):
             return self._primary()
 
     def _primary(self):  # -> int | float
-        match (token := self._current_token()):
+        match (token := self._current_token()).type:
             case TOKEN_TYPES.NUM:
                 self._next()
                 return token.value
@@ -88,8 +89,13 @@ class CalculatorM1(Calculator):
                 result = self._expr()
                 if self._current_token() != TOKEN_TYPES.R_PARENTHESIS:
                     CalcError(
-                        f"Ожидалось число или открывающая скобка. Получено {self._current_token()} / pos: {self.pos}")
+                        f"Ожидалось число или открывающая скобка. Получено {self._current_token()} | pos: {self.pos}")
                 self._next()
                 return result
+
             case _:
-                CalcError("Ожидалось число или открывающая скобка")
+                raise CalcError(
+                    f"Ожидалось число или открывающая скобка. Получено: {token} | pos: {self.pos}")
+
+
+print(CalculatorM1().solve(MediumTokenizator().tokenize("2+(2*2)")))
