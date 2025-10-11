@@ -39,7 +39,7 @@ class Tokenizator(ABC):
             raise CalcError("Пустой ввод")
         self.tokens.clear()
         self.pos = 0
-        self.expr = expr
+        self.expr = expr.replace(",", ".")
 
     def _add_token(self, element: str):
         """

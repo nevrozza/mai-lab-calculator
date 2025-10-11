@@ -1,8 +1,7 @@
 from src.common.calculator import Calculator
+from src.common.tokenization.tokens import Token, TOKEN_TYPES
 from src.common.utils.errors import CalcError
 from src.common.utils.messages import debug, warning
-from src.e1.easy_tokenizator import EasyTokenizator
-from src.common.tokenization.tokens import Token, TOKEN_TYPES
 
 
 class CalculatorE1(Calculator):
@@ -96,6 +95,7 @@ class CalculatorE1(Calculator):
             raise CalcError("Unexpected error")  # TODO
 
 
-warning(CalculatorE1().solve(EasyTokenizator().tokenize("+10/4-5*2+7.5")))
+warning(CalculatorE1().solve(
+    [Token(TOKEN_TYPES.NUM, 2), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.NUM, 3), Token(TOKEN_TYPES.EOF)]))
 # warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
 # warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!

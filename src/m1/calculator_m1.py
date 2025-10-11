@@ -2,7 +2,6 @@ from src.common.calculator import Calculator
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
 from src.common.utils.errors import CalcError
 from src.common.utils.messages import debug
-from src.m1.medium_tokenizator import MediumTokenizator
 
 
 class CalculatorM1(Calculator):
@@ -16,6 +15,7 @@ class CalculatorM1(Calculator):
         self.tokens = tokens
         self.pos = 0
         result = self._expr()
+        debug(type(result))
         return result
 
     def _expr(self) -> int | float:
@@ -25,7 +25,6 @@ class CalculatorM1(Calculator):
         result = self._mul()
 
         while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
-            debug(self._current_token())
             sign = 1
             match self._current_token().type:
                 case TOKEN_TYPES.PLUS:
@@ -39,12 +38,12 @@ class CalculatorM1(Calculator):
         return result
 
     def _mul(self) -> int | float:
-        result = self._pow()
+        result = self._unary()
 
         while self._current_token().type in (TOKEN_TYPES.MUL, TOKEN_TYPES.DIV, TOKEN_TYPES.FLOOR_DIV, TOKEN_TYPES.MOD):
             operator = self._current_token()
             self._next()
-            right = self._pow()
+            right = self._unary()
 
             match operator.type:
                 case TOKEN_TYPES.MUL:
@@ -57,27 +56,23 @@ class CalculatorM1(Calculator):
                     result %= right
         return result
 
-    def _pow(self) -> int | float:  # TODO: что насчёт ограничений
-        result = self._unary()
+    def _pow(self) -> int | float:  # TODO: что насчёт ограничений | complex
+        result = self._primary()
 
         while self._current_token().type == TOKEN_TYPES.POW:
             self._next()
-            exp = self._pow()  # Право-ассоц
-            result **= exp
+            degree = self._pow()  # Право-ассоц
+            result **= degree
         return result
 
     def _unary(self) -> int | float:
-        if self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
-            operator = self._current_token()
+        sign = 1
+        while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
+            if self._current_token().type == TOKEN_TYPES.MINUS:
+                sign *= -1
             self._next()
-            right = self._unary()  # Рекурсия для ситуаций лайк -(10-20) => -(-10) = 10
-            if operator == TOKEN_TYPES.PLUS:
-                return right
-            else:
-                return -right
 
-        else:
-            return self._primary()
+        return sign * self._pow()  # TODO: check equals to the previous (02:55 now((
 
     def _primary(self):  # -> int | float
         match (token := self._current_token()).type:
@@ -87,7 +82,7 @@ class CalculatorM1(Calculator):
             case TOKEN_TYPES.L_PARENTHESIS:
                 self._next()
                 result = self._expr()
-                if self._current_token() != TOKEN_TYPES.R_PARENTHESIS:
+                if self._current_token().type != TOKEN_TYPES.R_PARENTHESIS:
                     CalcError(
                         f"Ожидалось число или открывающая скобка. Получено {self._current_token()} | pos: {self.pos}")
                 self._next()
@@ -96,6 +91,3 @@ class CalculatorM1(Calculator):
             case _:
                 raise CalcError(
                     f"Ожидалось число или открывающая скобка. Получено: {token} | pos: {self.pos}")
-
-
-print(CalculatorM1().solve(MediumTokenizator().tokenize("2+(2*2)")))
