@@ -1,7 +1,9 @@
 from src.common.calculator import Calculator
-from src.common.tokenization.tokens import Token, TOKEN_TYPES
+from src.common.tokenization.tokenizator import Tokenizator
+from src.common.tokenization.tokens import TOKEN_TYPES
 from src.common.utils.errors import CalcError
 from src.common.utils.messages import debug
+from src.m1.medium_tokenizator import MediumTokenizator
 
 
 class CalculatorM1(Calculator):
@@ -11,7 +13,11 @@ class CalculatorM1(Calculator):
     Поддерживает скобки и операции: +, -, *, /, ** (право-ассоц), //, %
     """
 
-    def solve(self, tokens: list[Token]) -> int | float:
+    @property
+    def _tokenizator(self) -> Tokenizator:
+        return MediumTokenizator()
+
+    def solve(self, expr: str) -> int | float:
         """
         Запускает рекурсивный спуск (M1)
 
@@ -40,10 +46,10 @@ class CalculatorM1(Calculator):
             - -2**2 = -4 (унарные знаки ДО степени имеют НИЗКИЙ приоритет) // _left_associated_unary()
             - 2**-1 = 0.5 (унарные знаки В степени имеют ВЫСОКИЙ приоритет) // _right_associated_unary()
             - 2**3**2 = 2**(3**2) = 512 (правая ассоциативность в степени)
-        :param tokens:
+        :param expr:
         :return:
         """
-        self.tokens = tokens
+        self.tokens = self._tokenizator.tokenize(expr)
         self.pos = 0
         result = self._expr()
         debug(type(result))

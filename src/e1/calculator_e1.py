@@ -1,7 +1,9 @@
 from src.common.calculator import Calculator
-from src.common.tokenization.tokens import Token, TOKEN_TYPES
+from src.common.tokenization.tokenizator import Tokenizator
+from src.common.tokenization.tokens import TOKEN_TYPES
 from src.common.utils.errors import CalcError
-from src.common.utils.messages import debug, warning
+from src.common.utils.messages import debug
+from src.e1.easy_tokenizator import EasyTokenizator
 
 
 class CalculatorE1(Calculator):
@@ -11,7 +13,11 @@ class CalculatorE1(Calculator):
     Поддерживает базовые арифметические операции: +, -, *, /
     """
 
-    def solve(self, tokens: list[Token]) -> int | float:  # term + -
+    @property
+    def _tokenizator(self) -> Tokenizator:
+        return EasyTokenizator()
+
+    def solve(self, expr: str) -> int | float:  # term + -
         """
         Запускает рекурсивный спуск по токенам (E1)
 
@@ -28,12 +34,12 @@ class CalculatorE1(Calculator):
                     - Обрабатывает 2 токена, если есть не обработанный знак выше перед числом
                     - Иначе обрабатывает только 1 (само число)
 
-        :param tokens: Список токенов из EasyTokenizator
+        :param expr:
         :return: Результат вычисления выражения
         :raises ZeroDivisionError:  #TODO UnexpectedSym
         :raises CalcError:
         """
-        self.tokens = tokens
+        self.tokens = self._tokenizator.tokenize(expr)
         self.pos = 0
         result = self._expr()
         debug(self._current_token())  # print EOF  TODO: пока оставим, но мб не нужно это всё...
@@ -93,10 +99,3 @@ class CalculatorE1(Calculator):
             return sign * token.value
         else:
             raise CalcError("Unexpected error")  # TODO
-
-
-warning(CalculatorE1().solve(
-    [Token(TOKEN_TYPES.NUM, 2), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.NUM, 3),
-     Token(TOKEN_TYPES.EOF)]))
-# warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
-# warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!
