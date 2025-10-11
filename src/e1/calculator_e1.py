@@ -13,7 +13,7 @@ class CalculatorE1(Calculator):
 
     def solve(self, tokens: list[Token]) -> int | float:  # term + -
         """
-        Запускает рекурсивный спуск по токенам
+        Запускает рекурсивный спуск по токенам (E1)
 
         Алгоритм:
             1) Инициализация

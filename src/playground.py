@@ -125,6 +125,11 @@ if __name__ == "__main__":
     (1.2246467991473532e-16+2j) // <class 'complex'>
     """  # TODO: warning, что комплексное число
 
+    """
+    >>> (-4)**2**-1
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(-) | pos: 7
+    """
+
     while True:
         expr = input()
         print(calc.solve(tokenizator.tokenize(expr)))
