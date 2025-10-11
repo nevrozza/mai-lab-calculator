@@ -1,7 +1,7 @@
 import colorama
 from colorama import Fore
 
-from src.common.utils.assert_python import assert_python_version
+from src.assert_python import assert_python_version
 
 
 def main() -> None:

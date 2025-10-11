@@ -1,23 +1,19 @@
+from src.common.calculator import Calculator
+from src.common.tokenization.tokens import Token, TOKEN_TYPES
 from src.common.utils.errors import CalcError
 from src.common.utils.messages import debug, warning
-from src.e1.easy_tokenizator import EasyTokenizator
-from src.common.tokenization.tokens import Token, TOKEN_TYPES
 
 
-class CalculatorE1:
+class CalculatorE1(Calculator):
     """
     Калькулятор для обработки выражений уровня E1 с использованием рекурсивного спуска.
 
     Поддерживает базовые арифметические операции: +, -, *, /
     """
 
-    def __init__(self):
-        self.tokens = []
-        self.pos = 0
-
     def solve(self, tokens: list[Token]) -> int | float:  # term + -
         """
-        Запускает рекурсивный спуск по токенам
+        Запускает рекурсивный спуск по токенам (E1)
 
         Алгоритм:
             1) Инициализация
@@ -48,15 +44,15 @@ class CalculatorE1:
         result = self._term()
         while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
             debug(self._current_token())
-            sign_mul = 0
+            sign = 1
             match self._current_token().type:
                 case TOKEN_TYPES.PLUS:
-                    sign_mul = 1
+                    sign = 1
                 case TOKEN_TYPES.MINUS:
-                    sign_mul = -1
+                    sign = -1
 
             self._next()
-            result += sign_mul * self._term()
+            result += sign * self._term()
         return result
 
     def _term(self) -> int | float:  # factor * /
@@ -98,15 +94,8 @@ class CalculatorE1:
         else:
             raise CalcError("Unexpected error")  # TODO
 
-    def _next(self):
-        """Перемещает позицию на +1 [токен]"""
-        self.pos += 1
 
-    def _current_token(self) -> Token:
-        """:return Возвращает текущий токен:"""
-        return self.tokens[self.pos]
-
-
-warning(CalculatorE1().solve(EasyTokenizator().tokenize("+10/4-5*2+7.5")))
+warning(CalculatorE1().solve(
+    [Token(TOKEN_TYPES.NUM, 2), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.NUM, 3), Token(TOKEN_TYPES.EOF)]))
 # warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
 # warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!
