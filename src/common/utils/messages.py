@@ -1,12 +1,14 @@
 import colorama
 import os.path
 from inspect import currentframe
-from src.common.utils.vars import IS_DEBUG_MODE, DEBUG_TAG, WARNING_TAG
+
+from src.common.utils.terminal import TerminalConfig
+from src.common.utils.vars import DEBUG_TAG, WARNING_TAG
 
 
 def debug(message):
     """Debug Message"""
-    if IS_DEBUG_MODE:
+    if TerminalConfig.is_debug:
         tag = DEBUG_TAG
 
         # https://stackoverflow.com/questions/12997687/how-to-get-python-caller-object-information
@@ -23,7 +25,8 @@ def debug(message):
 
 def warning(message):
     """Warning Message"""
-    tagged_print(color=colorama.Fore.YELLOW, tag=WARNING_TAG, message=message)
+    if TerminalConfig.is_warning:
+        tagged_print(color=colorama.Fore.YELLOW, tag=WARNING_TAG, message=message)
 
 
 def tagged_print(color, tag: str, message):

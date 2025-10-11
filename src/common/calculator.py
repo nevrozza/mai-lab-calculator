@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 
 from src.common.tokenization.tokenizator import Tokenizator
-from src.common.tokenization.tokens import Token
+from src.common.tokenization.tokens import Token, tokens_to_expression
 
 
 class Calculator(ABC):
     """Абстрактный класс для калькуляторов"""
+
     def __init__(self):
         self.tokens = []
         self.pos = 0
@@ -13,6 +14,10 @@ class Calculator(ABC):
     @abstractmethod
     def solve(self, expr: str) -> int | float:
         pass
+
+    def solve_and_print(self, expr: str):
+        ans = self.solve(expr)
+        print(f"{tokens_to_expression(self.tokens)} = {ans}")
 
     def _next(self):
         """Перемещает позицию на +1 [токен]"""

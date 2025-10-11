@@ -39,3 +39,15 @@ class TOKEN_TYPES(Enum):
     L_PARENTHESIS = "("
     R_PARENTHESIS = ")"
     EOF = "EOF"
+
+
+def tokens_to_expression(tokens: list[Token]) -> str:
+    expr = ''
+    for t in tokens:
+        if t.type == TOKEN_TYPES.NUM:
+            expr += str(t.value)
+        elif t.type == TOKEN_TYPES.EOF:
+            continue
+        else:
+            expr += t.type.value
+    return expr
