@@ -96,6 +96,7 @@ class CalculatorE1(Calculator):
 
 
 warning(CalculatorE1().solve(
-    [Token(TOKEN_TYPES.NUM, 2), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.NUM, 3), Token(TOKEN_TYPES.EOF)]))
+    [Token(TOKEN_TYPES.NUM, 2), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.PLUS), Token(TOKEN_TYPES.NUM, 3),
+     Token(TOKEN_TYPES.EOF)]))
 # warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - -5 * 2")))  # !!
 # warning(CalculatorE1().solve(EasyTokenizator().tokenize("10 / 4 - - -5 * 2")))  # !!

@@ -28,7 +28,7 @@ class MediumTokenizator(Tokenizator):
 
     @property
     def _token_regex(self) -> Pattern[str]:
-        return  MEDIUM_TOKEN_RE
+        return MEDIUM_TOKEN_RE
 
     def _simplify_tokens(self) -> list[Token]:
         return []
