@@ -1,15 +1,12 @@
 import colorama
 from colorama import Fore
 
-from src.assert_python import assert_python_version
-
 
 def main() -> None:
     """
     Обязательнная составляющая программ, которые сдаются. Является точкой входа в приложение
     :return: Данная функция ничего не возвращает
     """
-    assert_python_version()
     colorama.init()
 
     labs_line = (Fore.GREEN + "E1" + " /"

@@ -3,11 +3,14 @@ repos:
     rev: v1.18.1
     hooks:
       - id: mypy
-        args: [--show-error-codes, --pretty]
+        args: [--show-error-codes, --pretty,
+               --check-untyped-defs  # For no "from typing import List"....
+        ]
         additional_dependencies:
           - types-requests
           - types-PyYAML
-          - types-colorama # added by me
+          - types-colorama  # Added by me
+          - pytest  # For tests
 
 
 
