@@ -1,0 +1,9 @@
+[project]
+name = "calculator"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "pluggy>=1.6.0",
+    "pytest>=8.4.2",
+]
