@@ -1,6 +1,6 @@
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
 from src.common.utils.errors import NoNumbersError, InvalidExprStartError, InvalidParenthesisError, \
-    SpaceBetweenFloatsError
+    FloatTogetherError
 
 
 class TokensValidator:
@@ -124,7 +124,7 @@ class TokensValidator:
                self._tokens[self._i].type == TOKEN_TYPES.NUM):
             next_num = self._tokens[self._i]
             if isinstance(number_value, float) or isinstance(next_num.value, float):
-                raise SpaceBetweenFloatsError(number_value, next_num.value)
+                raise FloatTogetherError(number_value, next_num.value)
             else:
                 number_value = int(str(number_value) + str(next_num.value))
                 self.warning_messages.add("Пробел между числами убран")

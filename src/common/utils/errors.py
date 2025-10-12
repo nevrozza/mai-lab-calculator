@@ -24,9 +24,9 @@ class NoNumbersError(CalcError):
         super().__init__("Где числа")
 
 
-class SpaceBetweenFloatsError(CalcError):
+class FloatTogetherError(CalcError):
     def __init__(self, f1, f2):
-        super().__init__(f"Пробел c дробным числом: {f1} и {f2}")
+        super().__init__(f"Дробное число рядом с другим: {f1} и {f2}")
 
 
 class InvalidInputError(CalcError):

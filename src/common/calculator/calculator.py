@@ -27,7 +27,15 @@ class Calculator(ABC):
         if len(self._tokens) > TOKENS_LIMIT:
             raise HardToCalculateExpression
 
-        return self._expr()
+        ans = self._expr()
+        if isinstance(ans, complex):
+            warning("Получилось комплексное число!")
+        elif ans.is_integer():
+            ans = int(ans)
+        elif isinstance(ans, float):
+            ans = round(ans, 2)
+
+        return ans
 
     @abstractmethod
     def _expr(self):
@@ -35,12 +43,6 @@ class Calculator(ABC):
 
     def solve_and_print(self, expr: str):
         ans = self.solve(expr)
-        if isinstance(ans, complex):
-            warning("Получилось комплексное число!")
-        elif ans.is_integer():
-            ans = int(ans)
-        elif isinstance(ans, float):
-            ans = round(ans, 2)
         print(f"{tokens_to_expression(self._tokens)} = {ans}")
 
     def _next(self):
