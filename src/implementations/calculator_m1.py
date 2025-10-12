@@ -1,6 +1,6 @@
 from src.common.calculator.calculator import Calculator
 from src.common.tokenization.tokenizator import Tokenizator
-from src.common.tokenization.tokens import TOKEN_TYPES, tokens_to_expression
+from src.common.tokenization.tokens import TOKEN_TYPES
 from src.common.utils.errors import InvalidTokenError
 from src.common.utils.operators import BASIC_OPERATORS, MUL_DIV_OPERATORS, FLOOR_DIV_OPERATOR, MOD_OPERATOR, \
     POW_OPERATOR
@@ -96,6 +96,6 @@ class CalculatorM1(Calculator):
                 return result
             case _:
                 raise InvalidTokenError(
-                    expr=tokens_to_expression(self._tokens),
+                    tokens=self._tokens,
                     pos=self._pos
                 )
