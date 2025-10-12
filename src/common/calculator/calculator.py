@@ -2,7 +2,9 @@ from abc import ABC, abstractmethod
 
 from src.common.tokenization.tokenizator import Tokenizator
 from src.common.tokenization.tokens import Token, tokens_to_expression, TOKEN_TYPES
+from src.common.utils.errors import HardToCalculateExpression
 from src.common.utils.messages import debug, warning
+from src.common.utils.vars import TOKENS_LIMIT
 
 
 class Calculator(ABC):
@@ -21,6 +23,10 @@ class Calculator(ABC):
     def solve(self, expr: str) -> int | float:
         self._tokens = self._tokenizator.tokenize(expr)
         self._pos = 0
+
+        if len(self._tokens) > TOKENS_LIMIT:
+            raise HardToCalculateExpression
+
         return self._expr()
 
     @abstractmethod
@@ -33,7 +39,7 @@ class Calculator(ABC):
             warning("Получилось комплексное число!")
         elif ans.is_integer():
             ans = int(ans)
-        else:
+        elif isinstance(ans, float):
             ans = round(ans, 2)
         print(f"{tokens_to_expression(self._tokens)} = {ans}")
 

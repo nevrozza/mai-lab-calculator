@@ -62,7 +62,7 @@ class TokensValidator:
         """
 
         if TOKEN_TYPES.NUM not in [t.type for t in self._tokens]:
-            raise NoNumbersError()
+            raise NoNumbersError
 
         first_token_type = self._tokens[self._i].type
 

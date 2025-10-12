@@ -32,7 +32,8 @@ def _main_input_callback_handler(variant: str):
         case "M1":
             calculator_entry_point(CalculatorM1())
         case "КАЗИК":
-            return False  # break
+            print(
+                Fore.MAGENTA + "[!!] КАЗИНО" + " " + Fore.RED + "ЗАКРЫТО [!!]" + Fore.LIGHTMAGENTA_EX + "\n    Приходите позже =)" + Fore.RESET)
         case _:
             print("Такой лабубы нет... Попробуйте ещё раз\n" + "=" * 40)
 

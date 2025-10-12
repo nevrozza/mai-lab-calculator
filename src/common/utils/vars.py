@@ -1,5 +1,9 @@
 import re
 
+POW_LIMIT = 1000
+TOKENS_LIMIT = 1000
+
+
 DEBUG_TAG: str = "DEBUG"
 WARNING_TAG: str = "WARNING"
 ERROR_TAG: str = "ОШИБКА"

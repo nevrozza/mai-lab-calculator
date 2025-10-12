@@ -1,5 +1,6 @@
 from src.common.tokenization.tokens import TOKEN_TYPES
-from src.common.utils.errors import NotIntegerDivisionError
+from src.common.utils.errors import NotIntegerDivisionError, HardToCalculateExpression
+from src.common.utils.vars import POW_LIMIT
 
 BASIC_OPERATORS = {
     TOKEN_TYPES.PLUS: lambda a, b: a + b,
@@ -20,8 +21,14 @@ MOD_OPERATOR = {
 }
 
 POW_OPERATOR = {
-    TOKEN_TYPES.POW: lambda a, b: a ** b
+    TOKEN_TYPES.POW: lambda a, b: _pow_div_fun(a, b)
 }
+
+
+def _pow_div_fun(a, b):
+    if b > POW_LIMIT:
+        raise HardToCalculateExpression
+    return a ** b
 
 
 def _floor_div_fun(a, b):

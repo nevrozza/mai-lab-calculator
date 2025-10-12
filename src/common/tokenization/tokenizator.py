@@ -37,7 +37,7 @@ class Tokenizator:
         :return: Список токенов из выражения
         """
         if not expr.strip():
-            raise EmptyExpressionError()
+            raise EmptyExpressionError
 
         self._reinit(expr)
 

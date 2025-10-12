@@ -9,6 +9,11 @@ class CalcError(Exception):
         error(self)
 
 
+class HardToCalculateExpression(CalcError):
+    def __init__(self):
+        super().__init__("Сложное выражение")
+
+
 class EmptyExpressionError(CalcError):
     def __init__(self):
         super().__init__("Пустое выражение")
