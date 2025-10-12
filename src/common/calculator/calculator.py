@@ -7,9 +7,11 @@ from src.common.tokenization.tokens import Token, tokens_to_expression
 class Calculator(ABC):
     """Абстрактный класс для калькуляторов"""
 
-    def __init__(self):
-        self.tokens = []
-        self.pos = 0
+    def __init__(self, tag: str, tokenizator: Tokenizator):
+        self.tag: str = tag
+        self._tokens: list[Token] = []
+        self._pos: int = 0
+        self._tokenizator: Tokenizator = tokenizator
 
     @abstractmethod
     def solve(self, expr: str) -> int | float:
@@ -17,18 +19,12 @@ class Calculator(ABC):
 
     def solve_and_print(self, expr: str):
         ans = self.solve(expr)
-        print(f"{tokens_to_expression(self.tokens)} = {ans}")
+        print(f"{tokens_to_expression(self._tokens)} = {ans}")
 
     def _next(self):
         """Перемещает позицию на +1 [токен]"""
-        self.pos += 1
+        self._pos += 1
 
     def _current_token(self) -> Token:
         """:return Возвращает текущий токен:"""
-        return self.tokens[self.pos]
-
-    @property
-    @abstractmethod
-    def _tokenizator(self) -> Tokenizator:
-        """:return: Regex паттерн для деления выражения на элементы"""
-        pass
+        return self._tokens[self._pos]

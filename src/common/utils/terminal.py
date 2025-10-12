@@ -26,15 +26,6 @@ DEFAULT_HELP_MESSAGE = (
         f'\n:w - в{'ы' if TerminalConfig.is_warning else ''}ключить предупреждения\n{'-' * 20}')
 
 
-def default_calculator_entry_point(calculator_tag, callback_handler):
-    help_message = f"{DEFAULT_HELP_MESSAGE}\n{calculator_tag} Введите выражение:"
-    print(help_message)
-    default_input_cycle(
-        input_message='>>> ',
-        callback_handler=callback_handler
-    )
-
-
 def default_input_cycle(input_message: str, callback_handler):
     while True:
         inp = input(input_message)

@@ -1,7 +1,10 @@
 from colorama import Fore, init
 
+from src.common.calculator.entry_point import calculator_entry_point
 from src.common.utils.terminal import default_input_cycle, DEFAULT_HELP_MESSAGE
-from src.e1.entry_point_e1 import entry_point_e1
+from src.e1.calculator_e1 import CalculatorE1
+
+from src.m1.calculator_m1 import CalculatorM1
 
 
 def main() -> None:
@@ -25,9 +28,9 @@ def main() -> None:
 def _main_input_callback_handler(variant: str):
     match variant.upper():
         case "E1":
-            entry_point_e1()
+            calculator_entry_point(CalculatorE1())
         case "M1":
-            return False  # break
+            calculator_entry_point(CalculatorM1())
         case "КАЗИК":
             return False  # break
         case _:

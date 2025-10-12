@@ -1,9 +1,9 @@
-from src.common.calculator import Calculator
+from src.common.calculator.calculator import Calculator
 from src.common.tokenization.tokenizator import Tokenizator
 from src.common.tokenization.tokens import TOKEN_TYPES
 from src.common.utils.errors import CalcError
-from src.common.utils.messages import debug
-from src.m1.medium_tokenizator import MediumTokenizator
+
+from src.common.utils.vars import MEDIUM_TOKEN_RE
 
 
 class CalculatorM1(Calculator):
@@ -13,9 +13,8 @@ class CalculatorM1(Calculator):
     Поддерживает скобки и операции: +, -, *, /, ** (право-ассоц), //, %
     """
 
-    @property
-    def _tokenizator(self) -> Tokenizator:
-        return MediumTokenizator()
+    def __init__(self):
+        super().__init__("[M1]", Tokenizator(MEDIUM_TOKEN_RE))
 
     def solve(self, expr: str) -> int | float:
         """
@@ -24,7 +23,7 @@ class CalculatorM1(Calculator):
         Алгоритм:
             1) Инициализация
             2) Разбор выражения с _expr:
-                expr() -> add() – сложение/вычитание:
+                _expr() -> add() – сложение/вычитание:
                     - Левый операнд (result) = mul()
                     - Обработка в цикле +=mul() или -=mul() к result
                 mul() - умножение/деление/остаток:
@@ -49,10 +48,9 @@ class CalculatorM1(Calculator):
         :param expr:
         :return:
         """
-        self.tokens = self._tokenizator.tokenize(expr)
-        self.pos = 0
+        self._tokens = self._tokenizator.tokenize(expr)
+        self._pos = 0
         result = self._expr()
-        debug(type(result))
         return result
 
     def _expr(self) -> int | float:
@@ -130,10 +128,10 @@ class CalculatorM1(Calculator):
                 result = self._expr()
                 if self._current_token().type != TOKEN_TYPES.R_PARENTHESIS:
                     CalcError(
-                        f"Ожидалось число или открывающая скобка. Получено {self._current_token()} | pos: {self.pos}")
+                        f"Ожидалось число или открывающая скобка. Получено {self._current_token()} | pos: {self._pos}")
                 self._next()
                 return result
 
             case _:
                 raise CalcError(
-                    f"Ожидалось число или открывающая скобка. Получено: {token} | pos: {self.pos}")
+                    f"Ожидалось число или открывающая скобка. Получено: {token} | pos: {self._pos}")

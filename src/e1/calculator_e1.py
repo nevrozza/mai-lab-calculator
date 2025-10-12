@@ -1,9 +1,9 @@
-from src.common.calculator import Calculator
+from src.common.calculator.calculator import Calculator
 from src.common.tokenization.tokenizator import Tokenizator
 from src.common.tokenization.tokens import TOKEN_TYPES, tokens_to_expression
 from src.common.utils.errors import InvalidTokenError, CalcError
 from src.common.utils.messages import debug
-from src.e1.easy_tokenizator import EasyTokenizator
+from src.common.utils.vars import EASY_TOKEN_RE
 
 
 class CalculatorE1(Calculator):
@@ -13,9 +13,8 @@ class CalculatorE1(Calculator):
     Поддерживает базовые арифметические операции: +, -, *, /
     """
 
-    @property
-    def _tokenizator(self) -> Tokenizator:
-        return EasyTokenizator()
+    def __init__(self):
+        super().__init__("[E1]", Tokenizator(EASY_TOKEN_RE))
 
     def solve(self, expr: str) -> int | float:  # term + -
         """
@@ -39,8 +38,9 @@ class CalculatorE1(Calculator):
         :raises ZeroDivisionError:
         :raises CalcError:
         """
-        self.tokens = self._tokenizator.tokenize(expr)
-        self.pos = 0
+        self._tokens = self._tokenizator.tokenize(expr)
+        self._pos = 0
+
         result = self._expr()
         return result
 
@@ -93,8 +93,8 @@ class CalculatorE1(Calculator):
 
         if token.type != TOKEN_TYPES.NUM:
             raise InvalidTokenError(
-                expr=tokens_to_expression(self.tokens),
-                pos=self.pos
+                expr=tokens_to_expression(self._tokens),
+                pos=self._pos
             )
         else:
             self._next()
