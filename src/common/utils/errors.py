@@ -53,6 +53,17 @@ class InvalidTokenError(CalcError):
         super().__init__(f"{message}{expr}\n" + ' ' * (pos + len(message) + len(ERROR_TAG) + 3) + "^ здесь")
 
 
-class NotClosedParenthesisError(CalcError):
-    def __init__(self):
-        super().__init__("Не все открытые скобки были закрыты")
+class InvalidParenthesisError(CalcError):
+    """
+    Ошибка, связанная с неправильным расставлением скобок
+
+    :param is_negative_count: Если True - значит была ситуация ()), иначе (()
+    """
+
+    def __init__(self, is_negative_count):
+        if is_negative_count:
+            message = "Скобок закрыто больше, чем надо =)"
+        else:
+            message = "Не все открытые скобки были закрыты"
+
+        super().__init__(message)

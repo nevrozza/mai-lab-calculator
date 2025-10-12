@@ -2,7 +2,7 @@ from re import Pattern
 
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
 from src.common.utils.errors import EmptyExpressionError, InvalidInputError, NoNumbersError, InvalidExprStartError, \
-    SpaceBetweenFloatsError
+    SpaceBetweenFloatsError, InvalidParenthesisError
 from src.common.utils.messages import debug, warning
 
 
@@ -111,17 +111,29 @@ class Tokenizator:
         :return: Список токенов с упрощением
         """
 
+        parenthesis_stack = []
         result = []
         i = 0
 
         if TOKEN_TYPES.NUM not in [t.type for t in self._tokens]:
             raise NoNumbersError()
 
-        if (first_token_type := self._tokens[i].type) not in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS, TOKEN_TYPES.NUM, TOKEN_TYPES.L_PARENTHESIS):
+        if (first_token_type := self._tokens[i].type) not in (
+        TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS, TOKEN_TYPES.NUM, TOKEN_TYPES.L_PARENTHESIS):
             raise InvalidExprStartError(first_token_type.value)
 
         while i < len(self._tokens):
-            current_type = self._tokens[i].type
+            current_token = self._tokens[i]
+            current_type = current_token.type
+
+            match current_token.type:
+                case TOKEN_TYPES.L_PARENTHESIS:
+                    parenthesis_stack.append(TOKEN_TYPES.L_PARENTHESIS.value)
+                case TOKEN_TYPES.R_PARENTHESIS:
+                    if len(parenthesis_stack) == 0:
+                        raise InvalidParenthesisError(True)
+                    else:
+                        parenthesis_stack.pop()
 
             if current_type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
                 """
@@ -145,7 +157,7 @@ class Tokenizator:
                     result.append(Token(TOKEN_TYPES.PLUS))
             elif current_type == TOKEN_TYPES.NUM:
                 # Обрабатываем числа с пробелом: "1 2" -> "12"
-                number_value = self._tokens[i].value
+                number_value = current_token.value
                 i += 1
 
                 # Пока следующие токены - числа, совмещаем их
@@ -157,11 +169,23 @@ class Tokenizator:
                         number_value = int(str(number_value) + str(next_num.value))
                         self._warning_messages.add("Пробел между числами убран")
                     i += 1
-
                 result.append(Token(TOKEN_TYPES.NUM, number_value))
-            else:
-                result.append(self._tokens[i])
+
+                if i < len(self._tokens) and self._tokens[i].type == TOKEN_TYPES.L_PARENTHESIS:
+                    result.append(Token(TOKEN_TYPES.MUL))
+
+            elif (current_type == TOKEN_TYPES.R_PARENTHESIS and i + 1 < len(self._tokens)
+                  and self._tokens[i + 1].type in (TOKEN_TYPES.L_PARENTHESIS, TOKEN_TYPES.NUM)):
+                result.append(current_token)
+                result.append(Token(TOKEN_TYPES.MUL))
                 i += 1
+
+            else:
+                result.append(current_token)
+                i += 1
+
+        if parenthesis_stack:
+            raise InvalidParenthesisError(False)
 
         while result and result[-1].type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS,
                                              TOKEN_TYPES.MUL, TOKEN_TYPES.DIV):

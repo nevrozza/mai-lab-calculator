@@ -1,7 +1,7 @@
 from src.common.calculator.calculator import Calculator
 from src.common.tokenization.tokenizator import Tokenizator
-from src.common.tokenization.tokens import TOKEN_TYPES
-from src.common.utils.errors import CalcError
+from src.common.tokenization.tokens import TOKEN_TYPES, tokens_to_expression
+from src.common.utils.errors import NotIntegerDivisionError, InvalidTokenError
 
 from src.common.utils.vars import MEDIUM_TOKEN_RE
 
@@ -85,13 +85,19 @@ class CalculatorM1(Calculator):
                     result *= right
                 case TOKEN_TYPES.DIV:
                     result /= right
-                case TOKEN_TYPES.FLOOR_DIV:  # TODO: ограничение, чтобы делить только для целых
-                    result //= right
-                case TOKEN_TYPES.MOD:  # TODO: ограничение, чтобы делить только для целых
-                    result %= right
+                case TOKEN_TYPES.FLOOR_DIV:
+                    if right.is_integer():
+                        result //= right
+                    else:
+                        raise NotIntegerDivisionError(operator.type.value)
+                case TOKEN_TYPES.MOD:
+                    if result.is_integer() and right.is_integer():
+                        result %= right
+                    else:
+                        raise NotIntegerDivisionError(operator.type.value)
         return result
 
-    def _pow(self) -> int | float:  # TODO: что насчёт ограничений | complex
+    def _pow(self) -> int | float: # | complex
         result = self._right_associated_unary()
 
         while self._current_token().type == TOKEN_TYPES.POW:
@@ -126,12 +132,10 @@ class CalculatorM1(Calculator):
             case TOKEN_TYPES.L_PARENTHESIS:
                 self._next()
                 result = self._expr()
-                if self._current_token().type != TOKEN_TYPES.R_PARENTHESIS:
-                    CalcError(
-                        f"Ожидалось число или открывающая скобка. Получено {self._current_token()} | pos: {self._pos}")
                 self._next()
                 return result
-
             case _:
-                raise CalcError(
-                    f"Ожидалось число или открывающая скобка. Получено: {token} | pos: {self._pos}")
+                raise InvalidTokenError(
+                    expr=tokens_to_expression(self._tokens),
+                    pos=self._pos
+                )
