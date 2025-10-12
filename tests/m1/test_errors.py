@@ -86,9 +86,10 @@ def test_invalid_token_error(expression):
 @pytest.mark.parametrize("expression", [
     "(2 + 3))",
     "((2+3)))",
-    "2 + (3 * 4))",
+    "2+(3* 4))",
     "((1+2)) + 3)",
     "1 + (2 + 3)))",
+    "(32131))(",
 ])
 def test_invalid_parenthesis_error_extra_closing(expression):
     _check(expression, InvalidParenthesisError)
@@ -96,11 +97,11 @@ def test_invalid_parenthesis_error_extra_closing(expression):
 
 @pytest.mark.parametrize("expression", [
     "(2 + 3",
-    "((2 + 3) * (4 - 1",
+    "((2 + 3) *(4-1",
     "(((5 + 2) * 3",
     "(1 + (2 * (3 + 4)",
     "((1+2)*(3+4)",
-    "(5 * (2 + 3",
+    "(((5+2)*3",
 ])
 def test_invalid_parenthesis_error_unclosed(expression):
     _check(expression, InvalidParenthesisError)
@@ -115,6 +116,7 @@ def test_invalid_parenthesis_error_unclosed(expression):
     "(5 * 2) / 0",
     "1.5 / 0",
     "0.0 / 0.0",
+    "0**-1"
 ])
 def test_zero_division_error_regular_div(expression):
     _check(expression, ZeroDivisionError)

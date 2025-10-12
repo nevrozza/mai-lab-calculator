@@ -34,7 +34,7 @@ def test_number_concatenation(expression, expected):
     _check(expression, expected)
 
 
-@pytest.mark.parametrize("expression, expected", [("2(3)", "2*(3)"), ("3(4+5)", "3*(4+5)"), ("(1)(2)", "(1)*(2)")])
+@pytest.mark.parametrize("expression, expected", [("2(3)", "2*(3)"), ("3(4+5)", "3*(4+5)"), ("(1+1)(2+2)", "(1+1)*(2+2)")])
 def test_implicit_multiplication(expression, expected):
     _check(expression, expected)
 
