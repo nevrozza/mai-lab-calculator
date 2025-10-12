@@ -1,15 +1,13 @@
-from src.m1.calculator_m1 import CalculatorM1
-from src.m1.medium_tokenizator import MediumTokenizator
+from src.implementations.calculator_m1 import CalculatorM1
 
 if __name__ == "__main__":
     calc = CalculatorM1()
-    tokenizator = MediumTokenizator()
 
     """
     >>> 10**10000
     Traceback (most recent call last):
       File "/Users/nevrozq/Code/mai-py-labs/calculator/src/m1/calculator_m1.py", line 107, in <module>
-        print(calc.solve(tokenizator.tokenize(expr)))
+        print(calc.solve(tokenizator.tokenize(_expr)))
         ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     ValueError: Exceeds the limit (4300 digits) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit
     """
@@ -48,7 +46,7 @@ if __name__ == "__main__":
     """
     >>> 2****10
     [Token(NUM, 2), Token(**), Token(**), Token(NUM, 10), Token(EOF)]
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(**) | pos: 2
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(**) | _pos: 2
     """  # TODO: validate_and_simplify_tokens
 
     """
@@ -56,7 +54,7 @@ if __name__ == "__main__":
     [DEBUG medium_tokenizator.py:18 (tokenize)] (2+3
     [DEBUG medium_tokenizator.py:19 (tokenize)] [Token((), Token(NUM, 2), Token(+), Token(NUM, 3), Token(EOF)]
       File "/Users/nevrozq/Code/mai-py-labs/calculator/src/common/calculator.py", line 22, in _current_token
-        return self.tokens[self.pos]
+        return self._tokens[self._pos]
                ~~~~~~~~~~~^^^^^^^^^^
     IndexError: list index out of range
     """  # TODO: безопасный _next()? Или просто ловить ошибку
@@ -70,33 +68,33 @@ if __name__ == "__main__":
 
     """
     >>> ()
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token()) | pos: 1
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token()) | _pos: 1
     """
 
     """
     >>> *()
     [DEBUG medium_tokenizator.py:18 (tokenize)] *()
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(*) | pos: 0
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(*) | _pos: 0
     """
 
     """
     >>> (+)
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token()) | pos: 2
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token()) | _pos: 2
     """
 
     """
     >>> ---
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(EOF) | pos: 3
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(EOF) | _pos: 3
     """
 
     """
     >>> 10-
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(EOF) | pos: 2
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(EOF) | _pos: 2
     """
 
     """
     >>> 10+
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(EOF) | pos: 2
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(EOF) | _pos: 2
     """
 
     """
@@ -127,9 +125,9 @@ if __name__ == "__main__":
 
     """
     >>> (-4)**2**-1
-    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(-) | pos: 7
+    src.common.utils.errors.CalcError: Ожидалось число или открывающая скобка. Получено: Token(-) | _pos: 7
     """
 
     while True:
         expr = input()
-        print(calc.solve(tokenizator.tokenize(expr)))
+        print(calc.solve(expr))

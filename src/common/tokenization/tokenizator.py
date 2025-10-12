@@ -1,45 +1,61 @@
-from abc import ABC, abstractmethod
+import re
 from re import Pattern
 
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
-from src.common.utils.errors import CalcError
+from src.common.tokenization.tokens_validator import TokensValidator
+from src.common.utils.errors import EmptyExpressionError, InvalidInputError
+from src.common.utils.messages import debug, warning
 
 
-class Tokenizator(ABC):
-    """
-    Абстрактный класс для токенизаторов
+class Tokenizator:
 
-    Реализует общую логику токенизации
-    """
+    def __init__(self, token_regex: Pattern[str]):
+        """
+        :param token_regex: Скомпилированное регулярное выражение для извлечения токенов
+        """
+        self._tokens: list[Token] = []
+        self._pos: int = 0
+        self._expr: str = ""
+        self._token_regex = token_regex
 
-    def __init__(self):
-        self.tokens: list[Token] = []
-        self.pos: int = 0
-        self.expr: str = ""
+    def _reinit(self, expr: str):
+        """ВАЖНО: заменяет запятые на точки (python decimal style)"""
+        self._tokens.clear()
+        self._pos = 0
+        self._expr = expr.replace(",", ".")
 
-    @abstractmethod
     def tokenize(self, expr: str) -> list[Token]:
         """
         Переводит выражение в список токенов
 
+        Алгоритм:
+            1) Проверка на пустоту
+            2) Разбиение на токены с помощью regex
+            3) Валидация и упрощение токенов
+
         :param expr: Строка с выражением
         :return: Список токенов из выражения
         """
-
-        pass
-
-    def _reinit(self, expr: str):
-        """
-        Переинициализирует токенизатор для нового выражения
-        :param expr: Строка с выражением
-        :return: Данная функция ничего не возвращает
-        :raises CalcError: Если пустой ввод
-        """
         if not expr.strip():
-            raise CalcError("Пустой ввод")
-        self.tokens.clear()
-        self.pos = 0
-        self.expr = expr.replace(",", ".")
+            raise EmptyExpressionError
+
+        self._reinit(expr)
+
+        while (element := self._get_next_element()) is not None:
+            self._add_token(element)
+
+        debug(expr)
+        debug(self._tokens)
+
+        tokens_validator = TokensValidator()
+
+        simplified_tokens = tokens_validator.validate_and_simplify_tokens(self._tokens)
+        debug(f"После упрощения: ${simplified_tokens}")
+
+        if tokens_validator.warning_messages:
+            warning(*tokens_validator.warning_messages)
+
+        return simplified_tokens
 
     def _add_token(self, element: str):
         """
@@ -47,58 +63,35 @@ class Tokenizator(ABC):
 
         ВАЖНО:
         - Число с унарным минусом преобразуется в два токена: MINUS и abs(NUM)
-        - Запятые меняются на точки
 
         :param element: Элемент для преобразования (число, символ)
         """
 
-        element = element.replace(",", ".")
-        if element.replace("-", "").replace("+", "").replace(".", "").isdigit():  # TODO: Regex
+        if re.match(r'^[-+]?\d*\.?\d+$', element):
             value = float(element) if '.' in element else int(element)
             num_token = Token(TOKEN_TYPES.NUM, abs(value))
 
             if (unary := element[0]) in (TOKEN_TYPES.MINUS.value, TOKEN_TYPES.PLUS.value):
-                self.tokens += [Token(TOKEN_TYPES(unary)), num_token]
+                self._tokens += [Token(TOKEN_TYPES(unary)), num_token]
             else:
-                self.tokens.append(num_token)
+                self._tokens.append(num_token)
         else:
-            self.tokens.append(Token(TOKEN_TYPES(element)))
+            self._tokens.append(Token(TOKEN_TYPES(element)))
 
     def _get_next_element(self) -> str | None:
         """
         Извлекает следующий элемент выражения с использованием regex паттерна.
 
         :return: Элемент или None, если достигли последнего элемента
-        :raises CalcError: Если не найден следующий элемент.
+        :raises InvalidInputError: Если найден лишний символ
         """
-        if self.pos >= len(self.expr):  # for `outside` while cycle
+        if self._pos >= len(self._expr):  # for `outside` while cycle
             return None
 
-        matched = self._token_regex.match(self.expr, self.pos)
+        matched = self._token_regex.match(self._expr, self._pos)
         if not matched:
-            raise CalcError(f"Некорректный ввод около: '{self.expr[self.pos:]}'")
+            raise InvalidInputError(self._expr[self._pos:])
 
         element = matched.group(1)
-        self.pos = matched.end()
+        self._pos = matched.end()
         return element
-
-    @property
-    @abstractmethod
-    def _token_regex(self) -> Pattern[str]:
-        """:return: Regex паттерн для деления выражения на элементы"""
-        pass
-
-    @abstractmethod
-    def _simplify_tokens(self) -> list[Token]:
-        """
-        Упрощает токены согласно правилам математики
-
-        Примеры:
-            - "---" -> "-"
-            - "+-"  -> "-"
-            - "++"  -> "+"
-
-        O(N), клянусь
-        :return: Список токенов с упрощением
-        """
-        pass
