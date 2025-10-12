@@ -1,4 +1,4 @@
-from src.m1.calculator_m1 import CalculatorM1
+from src.implementations.calculator_m1 import CalculatorM1
 
 if __name__ == "__main__":
     calc = CalculatorM1()

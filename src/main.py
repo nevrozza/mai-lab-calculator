@@ -2,9 +2,9 @@ from colorama import Fore, init
 
 from src.common.calculator.entry_point import calculator_entry_point
 from src.common.utils.terminal import default_input_cycle, DEFAULT_HELP_MESSAGE
-from src.e1.calculator_e1 import CalculatorE1
+from src.implementations.calculator_e1 import CalculatorE1
 
-from src.m1.calculator_m1 import CalculatorM1
+from src.implementations.calculator_m1 import CalculatorM1
 
 
 def main() -> None:

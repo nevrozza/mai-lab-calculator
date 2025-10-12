@@ -57,11 +57,11 @@ class InvalidParenthesisError(CalcError):
     """
     Ошибка, связанная с неправильным расставлением скобок
 
-    :param is_negative_count: Если True - значит была ситуация ()), иначе (()
+    :param has_extra_closing: Если True - значит была ситуация ()), иначе (()
     """
 
-    def __init__(self, is_negative_count):
-        if is_negative_count:
+    def __init__(self, has_extra_closing):
+        if has_extra_closing:
             message = "Скобок закрыто больше, чем надо =)"
         else:
             message = "Не все открытые скобки были закрыты"

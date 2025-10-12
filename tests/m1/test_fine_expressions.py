@@ -1,6 +1,6 @@
 import pytest
 
-from src.m1.calculator_m1 import CalculatorM1
+from src.implementations.calculator_m1 import CalculatorM1
 from tests.common.expressions import UNARY_TESTS, BASIC_TESTS, PRIORITY_TESTS
 
 M1_BASIC_EXPRESSIONS = BASIC_TESTS + [
