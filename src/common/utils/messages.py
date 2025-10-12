@@ -11,6 +11,7 @@ def debug(*message: object):
     if TerminalConfig.is_debug:
         tag = DEBUG_TAG
 
+        # получаем скоуп, откуда вызвали функцию
         # https://stackoverflow.com/questions/12997687/how-to-get-python-caller-object-information
         current_frame = currentframe()
         if current_frame and current_frame.f_back:  # safe-call (?.) from kotlin

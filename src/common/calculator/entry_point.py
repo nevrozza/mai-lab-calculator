@@ -5,6 +5,14 @@ from src.common.utils.terminal import DEFAULT_HELP_MESSAGE, default_input_cycle
 
 
 def calculator_entry_point(calculator: Calculator):
+    """
+    Точка входа для работы с калькулятором.
+
+    Запускает интерактивный цикл ввода для вычисления математических выражений.
+    Выводит справочное сообщение и обрабатывает пользовательский ввод.
+    :param calculator: Калькулятор, с помощью которого будут производиться вычисления
+    :return: Данная функция ничего не возвращает
+    """
     help_message = f"{DEFAULT_HELP_MESSAGE}\n{calculator.tag} Введите выражение:"
     print(help_message)
     default_input_cycle(
@@ -14,6 +22,7 @@ def calculator_entry_point(calculator: Calculator):
 
 
 def _calculator_callback_handler(calculator: Calculator, expr: str):
+    """Обработчик callback-функции для вычисления выражений и обработки ошибок"""
     try:
         calculator.solve_and_print(expr)
     except ZeroDivisionError:

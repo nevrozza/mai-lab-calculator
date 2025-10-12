@@ -1,7 +1,9 @@
 from src.common.calculator.calculator import Calculator
 from src.common.tokenization.tokenizator import Tokenizator
 from src.common.tokenization.tokens import TOKEN_TYPES, tokens_to_expression
-from src.common.utils.errors import NotIntegerDivisionError, InvalidTokenError
+from src.common.utils.errors import InvalidTokenError
+from src.common.utils.operators import BASIC_OPERATORS, MUL_DIV_OPERATORS, FLOOR_DIV_OPERATOR, MOD_OPERATOR, \
+    POW_OPERATOR
 
 from src.common.utils.vars import MEDIUM_TOKEN_RE
 
@@ -48,83 +50,41 @@ class CalculatorM1(Calculator):
         :param expr:
         :return:
         """
-        self._tokens = self._tokenizator.tokenize(expr)
-        self._pos = 0
-        result = self._expr()
-        return result
+        return super().solve(expr)
 
     def _expr(self) -> int | float:
         return self._add()  # why, but ТЗ
 
     def _add(self) -> int | float:
-        result = self._mul()
-
-        while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
-            sign = 1
-            match self._current_token().type:
-                case TOKEN_TYPES.PLUS:
-                    sign = 1
-                case TOKEN_TYPES.MINUS:
-                    sign = -1
-
-            self._next()
-            result += sign * self._mul()
-
-        return result
+        return self._process_operations(
+            next_method=self._mul,
+            operators=BASIC_OPERATORS
+        )
 
     def _mul(self) -> int | float:
-        result = self._left_associated_unary()
+        return self._process_operations(
+            next_method=self._left_associated_unary,
+            operators={
+                **MUL_DIV_OPERATORS,
+                **FLOOR_DIV_OPERATOR,
+                **MOD_OPERATOR
+            }
+        )
 
-        while self._current_token().type in (TOKEN_TYPES.MUL, TOKEN_TYPES.DIV, TOKEN_TYPES.FLOOR_DIV, TOKEN_TYPES.MOD):
-            operator = self._current_token()
-            self._next()
-            right = self._left_associated_unary()
-
-            match operator.type:
-                case TOKEN_TYPES.MUL:
-                    result *= right
-                case TOKEN_TYPES.DIV:
-                    result /= right
-                case TOKEN_TYPES.FLOOR_DIV:
-                    if right.is_integer():
-                        result //= right
-                    else:
-                        raise NotIntegerDivisionError(operator.type.value)
-                case TOKEN_TYPES.MOD:
-                    if result.is_integer() and right.is_integer():
-                        result %= right
-                    else:
-                        raise NotIntegerDivisionError(operator.type.value)
-        return result
-
-    def _pow(self) -> int | float: # | complex
-        result = self._right_associated_unary()
-
-        while self._current_token().type == TOKEN_TYPES.POW:
-            self._next()
-            degree = self._pow()  # Право-ассоц
-            result **= degree
-        return result
+    def _pow(self) -> int | float:  # | complex
+        return self._process_operations(
+            next_method=self._right_associated_unary,
+            operators=POW_OPERATOR,
+            right_associative=True
+        )
 
     def _right_associated_unary(self) -> int | float:
-        sign = 1
-        while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
-            if self._current_token().type == TOKEN_TYPES.MINUS:
-                sign *= -1
-            self._next()
-
-        return sign * self._primary()
+        return self._process_unary_operations(self._primary)
 
     def _left_associated_unary(self) -> int | float:
-        sign = 1
-        while self._current_token().type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
-            if self._current_token().type == TOKEN_TYPES.MINUS:
-                sign *= -1
-            self._next()
+        return self._process_unary_operations(self._pow)
 
-        return sign * self._pow()
-
-    def _primary(self):  # -> int | float
+    def _primary(self): # -> int | float
         match (token := self._current_token()).type:
             case TOKEN_TYPES.NUM:
                 self._next()

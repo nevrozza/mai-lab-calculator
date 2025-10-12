@@ -9,12 +9,6 @@ class CalcError(Exception):
         error(self)
 
 
-# Known errors: (их нет смысла добавлять)
-# - ValueError: Exceeds the limit (4300 digits) for integer string conversion
-# - ZeroDivisionError
-
-# TODO: ZeroDivisionError: 0.0 cannot be raised to a negative power
-
 class EmptyExpressionError(CalcError):
     def __init__(self):
         super().__init__("Пустое выражение")

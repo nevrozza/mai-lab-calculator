@@ -1,5 +1,11 @@
 class TerminalConfig:
-    """СИНГЛТОН для конфигурации терминала"""
+    """
+    СИНГЛТОН для конфигурации терминала
+
+    ВАЖНО:
+    - Есть toggle_debug и toggle_warning
+        >> TerminalConfig.toggle_debug()
+    """
     is_debug: bool = False
     is_warning: bool = True
 
@@ -27,6 +33,7 @@ DEFAULT_HELP_MESSAGE = (
 
 
 def default_input_cycle(input_message: str, callback_handler):
+    """Универсальный цикл ввода с поддержкой выхода и настроек"""
     while True:
         inp = input(input_message)
         match inp.lower():

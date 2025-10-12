@@ -11,7 +11,7 @@ class Tokenizator:
 
     def __init__(self, token_regex: Pattern[str]):
         """
-        :type token_regex: Скомпилированное регулярное выражение для извлечения токенов
+        :param token_regex: Скомпилированное регулярное выражение для извлечения токенов
         """
         self._tokens: list[Token] = []
         self._pos: int = 0
