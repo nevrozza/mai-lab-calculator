@@ -1,7 +1,7 @@
 from src.common.calculator import Calculator
 from src.common.tokenization.tokenizator import Tokenizator
-from src.common.tokenization.tokens import TOKEN_TYPES
-from src.common.utils.errors import CalcError
+from src.common.tokenization.tokens import TOKEN_TYPES, tokens_to_expression
+from src.common.utils.errors import InvalidTokenError, CalcError
 from src.common.utils.messages import debug
 from src.e1.easy_tokenizator import EasyTokenizator
 
@@ -36,13 +36,12 @@ class CalculatorE1(Calculator):
 
         :param expr:
         :return: Результат вычисления выражения
-        :raises ZeroDivisionError:  #TODO UnexpectedSym
+        :raises ZeroDivisionError:
         :raises CalcError:
         """
         self.tokens = self._tokenizator.tokenize(expr)
         self.pos = 0
         result = self._expr()
-        debug(self._current_token())  # print EOF  TODO: пока оставим, но мб не нужно это всё...
         return result
 
     def _expr(self) -> int | float:
@@ -93,9 +92,14 @@ class CalculatorE1(Calculator):
             token = self._current_token()
 
         if token.type != TOKEN_TYPES.NUM:
-            raise CalcError(f"Ожидалось число, получено: {token}")
-        self._next()
-        if token.value is not None:
-            return sign * token.value
+            raise InvalidTokenError(
+                expr=tokens_to_expression(self.tokens),
+                pos=self.pos
+            )
         else:
-            raise CalcError("Unexpected error")  # TODO
+            self._next()
+            if token.value is not None:
+                return sign * token.value
+            else:
+                # лол, сверху проверка на число... не знаю, как заставить его поверить, что value != None
+                raise CalcError("pre-commit был прав...")

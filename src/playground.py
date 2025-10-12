@@ -1,9 +1,7 @@
 from src.m1.calculator_m1 import CalculatorM1
-from src.m1.medium_tokenizator import MediumTokenizator
 
 if __name__ == "__main__":
     calc = CalculatorM1()
-    tokenizator = MediumTokenizator()
 
     """
     >>> 10**10000
@@ -132,4 +130,4 @@ if __name__ == "__main__":
 
     while True:
         expr = input()
-        print(calc.solve(tokenizator.tokenize(expr)))
+        print(calc.solve(expr))

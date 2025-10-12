@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from re import Pattern
 
 from src.common.tokenization.tokens import Token, TOKEN_TYPES
-from src.common.utils.errors import CalcError
+from src.common.utils.errors import EmptyExpressionError, InvalidInputError, NoNumbersError, InvalidExprStartError, \
+    SpaceBetweenFloatsError
 
 
 class Tokenizator(ABC):
@@ -16,6 +17,7 @@ class Tokenizator(ABC):
         self.tokens: list[Token] = []
         self.pos: int = 0
         self.expr: str = ""
+        self.warning_messages: set[str] = set()
 
     @abstractmethod
     def tokenize(self, expr: str) -> list[Token]:
@@ -36,8 +38,9 @@ class Tokenizator(ABC):
         :raises CalcError: Если пустой ввод
         """
         if not expr.strip():
-            raise CalcError("Пустой ввод")
+            raise EmptyExpressionError()
         self.tokens.clear()
+        self.warning_messages.clear()
         self.pos = 0
         self.expr = expr.replace(",", ".")
 
@@ -76,7 +79,7 @@ class Tokenizator(ABC):
 
         matched = self._token_regex.match(self.expr, self.pos)
         if not matched:
-            raise CalcError(f"Некорректный ввод около: '{self.expr[self.pos:]}'")
+            raise InvalidInputError(self.expr[self.pos:])
 
         element = matched.group(1)
         self.pos = matched.end()
@@ -88,8 +91,7 @@ class Tokenizator(ABC):
         """:return: Regex паттерн для деления выражения на элементы"""
         pass
 
-    @abstractmethod
-    def _simplify_tokens(self) -> list[Token]:
+    def _validate_and_simplify_tokens(self) -> list[Token]:
         """
         Упрощает токены согласно правилам математики
 
@@ -101,4 +103,64 @@ class Tokenizator(ABC):
         O(N), клянусь
         :return: Список токенов с упрощением
         """
-        pass
+
+        result = []
+        i = 0
+
+        if TOKEN_TYPES.NUM not in [t.type for t in self.tokens]:
+            raise NoNumbersError()
+
+        if (first_token_type := self.tokens[i].type) not in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS, TOKEN_TYPES.NUM):
+            raise InvalidExprStartError(first_token_type.value)
+
+        while i < len(self.tokens):
+            current_type = self.tokens[i].type
+
+            if current_type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
+                """
+                Обрабатываем ситуации аля
+                '---' -> '-'
+                '+-' -> '-'
+                '--' -> '+'
+                """
+                sign = 1
+                count = 0
+                while i < len(self.tokens) and self.tokens[i].type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS):
+                    if self.tokens[i].type == TOKEN_TYPES.MINUS:
+                        sign *= -1
+                    count += 1
+                    i += 1
+                if count > 1:
+                    self.warning_messages.add("Выражение было упрощено")
+                if sign == -1:
+                    result.append(Token(TOKEN_TYPES.MINUS))
+                elif result:  # Добавляем плюс, только если он НЕ в начале выражения
+                    result.append(Token(TOKEN_TYPES.PLUS))
+            elif current_type == TOKEN_TYPES.NUM:
+                # Обрабатываем числа с пробелом: "1 2" -> "12"
+                number_value = self.tokens[i].value
+                i += 1
+
+                # Пока следующие токены - числа, совмещаем их
+                while i < len(self.tokens) and self.tokens[i].type == TOKEN_TYPES.NUM:
+                    next_num = self.tokens[i]
+                    if isinstance(number_value, float) or isinstance(next_num.value, float):
+                        raise SpaceBetweenFloatsError(number_value, next_num.value)
+                    else:
+                        number_value = int(str(number_value) + str(next_num.value))
+                        self.warning_messages.add("Пробел между числами убран")
+                    i += 1
+
+                result.append(Token(TOKEN_TYPES.NUM, number_value))
+            else:
+                result.append(self.tokens[i])
+                i += 1
+
+        while result and result[-1].type in (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS,
+                                             TOKEN_TYPES.MUL, TOKEN_TYPES.DIV):
+            self.warning_messages.add("Удалены лишние операторы в конце")
+            result.pop()
+
+        result.append(Token(TOKEN_TYPES.EOF))
+
+        return result

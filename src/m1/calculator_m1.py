@@ -118,7 +118,7 @@ class CalculatorM1(Calculator):
                 sign *= -1
             self._next()
 
-        return sign * self._pow()  # TODO: check equals to the previous (02:55 now((
+        return sign * self._pow()
 
     def _primary(self):  # -> int | float
         match (token := self._current_token()).type:

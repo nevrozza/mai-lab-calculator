@@ -1,3 +1,5 @@
+from src.common.utils.errors import CalcError
+from src.common.utils.messages import error
 from src.common.utils.terminal import default_calculator_entry_point
 from src.e1.calculator_e1 import CalculatorE1
 
@@ -11,7 +13,9 @@ def _e1_callback_handler(calculator: CalculatorE1, expr: str):
     try:
         calculator.solve_and_print(expr)
     except ZeroDivisionError:
-        print("dsada")
+        error("На ноль делить нельзя!")
+    except CalcError as e:
+        e.print_error()
 
 
 if __name__ == "__main__":

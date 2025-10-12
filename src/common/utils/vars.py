@@ -2,6 +2,7 @@ import re
 
 DEBUG_TAG: str = "DEBUG"
 WARNING_TAG: str = "WARNING"
+ERROR_TAG: str = "ОШИБКА"
 
 EASY_TOKEN_PATTERN = r"""
 \s*                  # пропускаем пробелы перед каждым токеном

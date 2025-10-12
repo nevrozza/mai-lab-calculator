@@ -3,11 +3,11 @@ import os.path
 from inspect import currentframe
 
 from src.common.utils.terminal import TerminalConfig
-from src.common.utils.vars import DEBUG_TAG, WARNING_TAG
+from src.common.utils.vars import DEBUG_TAG, WARNING_TAG, ERROR_TAG
 
 
-def debug(message):
-    """Debug Message"""
+def debug(*message: object):
+    """Debug tagged message"""
     if TerminalConfig.is_debug:
         tag = DEBUG_TAG
 
@@ -20,20 +20,26 @@ def debug(message):
             line_number = caller_frame.f_lineno
             tag += f" {filename}:{line_number} ({function_name})"
 
-        tagged_print(color=colorama.Fore.CYAN, tag=tag, message=message)
+        tagged_print(colorama.Fore.CYAN, tag, *message)
 
 
-def warning(message):
-    """Warning Message"""
+def warning(*message: object):
+    """Warning tagged message"""
     if TerminalConfig.is_warning:
-        tagged_print(color=colorama.Fore.YELLOW, tag=WARNING_TAG, message=message)
+        tagged_print(colorama.Fore.YELLOW, WARNING_TAG, *message)
 
 
-def tagged_print(color, tag: str, message):
+def error(*message: object):
+    """Error tagged message"""
+    tagged_print(colorama.Fore.RED, ERROR_TAG, *message)
+
+
+def tagged_print(color, tag: str, *message: object):
     """
     Вывод с цветным тегом
     :param color: Цвет тега
     :param tag: Текст тега
     :param message: Сообщение
     """
-    print(color + f"[{tag}]" + colorama.Fore.RESET + f" {message}")
+    formatted_message = " | ".join(str(m) for m in message)
+    print(color + f"[{tag}]" + colorama.Fore.RESET + f" {formatted_message}")
