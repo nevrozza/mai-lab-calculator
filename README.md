@@ -145,19 +145,19 @@
       ```
       
 ## Примеры тестов _(281 шт...)_
-### Токенизация _(почти руками)_
+#### Токенизация _(почти руками)_
 > Использовал функцию, которая из токенов переводит в строку обратно:
 > `tokens_to_expression(tokenize(expression)) == exception`
 ```python
   │  1 2 3   -> 123    │  5+  -> 5  │  -+-+-5     -> -5
   │  2 3+4 5 -> 23+45  │  3*/ -> 3  │  (1+1)(2+2) -> (1+1)*(2+2)
 ```
-### Fine expressions _(через `eval`)_
+#### Fine expressions _(через `eval`)_
 ```python
   │  10 % (2.5 * 2)    │  (2**3)**2 │  -2**2  │ 2**(3+4*5)-17**3//29+45*(67-89//3)**2%77-1234//56+9876*543//210
   │  2.0 % 3           │  2**3**2   │  -2**-1 │ # dalshe скучные тесты
 ```
-### Calculator Errors _(`pytest.raises`)_
+#### Calculator Errors _(`pytest.raises`)_
 ```python
                                     # на E1 InputError вызывается из-за '%' и скобок
  │  NoNumbersError │  FloatTogetherError  │  InvalidInputError  │  NotIntegerDivisionError │  InvalidExprStartError   │
@@ -170,6 +170,13 @@
  # Ещё есть EmptyExpressionError и вот тесты на неё: 
 ```
 
-
+## Quick start
+ 1) Клонировать этот репозиторий через git и активировать uv или **просто** установить через pip:
+   `pip install -e git+https://github.com/nevrozza/mai-lab-calculator#egg=calculator`
+ 2) Перейти к корневой папке:
+    `cd src/calculator`
+ 4) Запустить программу через `uv`:
+    `uv run -m src.main`
+>_У вас же он скачан, не так ли? 0_о_
 
 
