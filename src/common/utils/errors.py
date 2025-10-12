@@ -1,3 +1,4 @@
+from src.common.tokenization.tokens import Token, TOKEN_TYPES, tokens_to_expression
 from src.common.utils.messages import error
 from src.common.utils.vars import ERROR_TAG
 
@@ -47,9 +48,15 @@ class InvalidExprStartError(CalcError):
 
 
 class InvalidTokenError(CalcError):
-    def __init__(self, expr: str, pos: int):
+    def __init__(self, tokens: list[Token], pos: int):
         message = "Некорректный ввод: "
-        super().__init__(f"{message}{expr}\n" + ' ' * (pos + len(message) + len(ERROR_TAG) + 3) + "^ здесь")
+
+        padding = len(message) + len(ERROR_TAG) + 3
+        for i in range(pos):
+            token = tokens[i]
+            padding += len(str(token.value)) if token.type == TOKEN_TYPES.NUM else 1
+
+        super().__init__(f"{message}{tokens_to_expression(tokens)}\n" + ' ' * padding + "^ здесь")
 
 
 class InvalidParenthesisError(CalcError):

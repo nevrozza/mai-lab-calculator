@@ -41,7 +41,7 @@ def test_implicit_multiplication(expression, expected):
 
 @pytest.mark.parametrize("expression, expected",
                          [("5+", "5"), ("3*/", "3"), ("1-+", "1"), ("2*", "2"), ("5 + 3 *", "5+3"),
-                          ("(2 + 3) *", "(2+3)")])
+                          ("(2 + 3) *", "(2+3)"), (" 2 +3** ", "2+3"), ("2+3% %  ", "2+3"), ("2+3// //", "2+3")])
 def test_end_operators_cleanup(expression, expected):
     _check(expression, expected)
 

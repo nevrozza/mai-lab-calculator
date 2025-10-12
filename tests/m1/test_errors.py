@@ -3,7 +3,8 @@ import pytest
 from src.common.utils.errors import EmptyExpressionError, NoNumbersError, FloatTogetherError, InvalidInputError, \
     NotIntegerDivisionError, InvalidExprStartError, InvalidTokenError, InvalidParenthesisError
 from src.implementations.calculator_m1 import CalculatorM1
-from tests.common.expressions import EMPTY_ERROR_TESTS, NO_NUMBERS_ERROR_TESTS, FLOAT_TOGETHER_ERROR_TESTS, INVALID_INPUT_ERROR_TESTS, \
+from tests.common.expressions import EMPTY_ERROR_TESTS, NO_NUMBERS_ERROR_TESTS, FLOAT_TOGETHER_ERROR_TESTS, \
+    INVALID_INPUT_ERROR_TESTS, \
     LARGE_NUMS_ERROR_TESTS
 
 
@@ -19,7 +20,7 @@ def test_empty_expression_error(expression):
 
 @pytest.mark.parametrize("expression",
                          NO_NUMBERS_ERROR_TESTS + ["(+)",
-                                             "(-)", ]
+                                                   "(-)", ]
                          )
 def test_no_numbers_error(expression):
     _check(expression, NoNumbersError)
@@ -144,6 +145,8 @@ def test_zero_division_error_modulo(expression):
     _check(expression, ZeroDivisionError)
 
 
-@pytest.mark.parametrize("expression", LARGE_NUMS_ERROR_TESTS)
+@pytest.mark.parametrize("expression", LARGE_NUMS_ERROR_TESTS + [
+    "2.1**1000"
+])
 def test_large_number_conversion_error(expression):
-    _check(expression, ValueError)
+    _check(expression, (ValueError, OverflowError))

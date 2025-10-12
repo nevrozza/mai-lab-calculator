@@ -159,7 +159,11 @@ class TokensValidator:
             - Добавляет EOF
         """
 
-        extra_operators = (TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS, TOKEN_TYPES.MUL, TOKEN_TYPES.DIV)
+        extra_operators = [
+            TOKEN_TYPES.PLUS, TOKEN_TYPES.MINUS, TOKEN_TYPES.MUL, TOKEN_TYPES.DIV,
+            TOKEN_TYPES.POW, TOKEN_TYPES.MOD,
+            TOKEN_TYPES.FLOOR_DIV
+        ]
         while self._result and self._result[-1].type in extra_operators:
             self.warning_messages.add("Удалены лишние операторы в конце")
             self._result.pop()

@@ -38,7 +38,7 @@ class Tokenizator:
         """
         if not expr.strip():
             raise EmptyExpressionError
-
+        expr = expr.strip()
         self._reinit(expr)
 
         while (element := self._get_next_element()) is not None:
