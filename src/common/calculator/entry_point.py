@@ -29,8 +29,5 @@ def _calculator_callback_handler(calculator: Calculator, expr: str):
         error("На ноль делить нельзя!")
     except CalcError as e:
         e.print_error()
-    except ValueError as e:
-        if "Exceeds the limit" in str(e):
-            error("Вышло слишком большое число =/")
-        else:
-            error(e)
+    except (OverflowError, ValueError):
+        error("Вышло слишком большое число =/")
