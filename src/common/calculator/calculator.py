@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from src.common.tokenization.tokenizator import Tokenizator
 from src.common.tokenization.tokens import Token, tokens_to_expression, TOKEN_TYPES
-from src.common.utils.messages import debug
+from src.common.utils.messages import debug, warning
 
 
 class Calculator(ABC):
@@ -29,6 +29,12 @@ class Calculator(ABC):
 
     def solve_and_print(self, expr: str):
         ans = self.solve(expr)
+        if isinstance(ans, complex):
+            warning("Получилось комплексное число!")
+        elif ans.is_integer():
+            ans = int(ans)
+        else:
+            ans = round(ans, 2)
         print(f"{tokens_to_expression(self._tokens)} = {ans}")
 
     def _next(self):

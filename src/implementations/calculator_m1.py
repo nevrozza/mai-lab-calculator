@@ -71,7 +71,7 @@ class CalculatorM1(Calculator):
             }
         )
 
-    def _pow(self) -> int | float:  # | complex
+    def _pow(self) -> int | float | complex:
         return self._process_operations(
             next_method=self._right_associated_unary,
             operators=POW_OPERATOR,
@@ -84,7 +84,7 @@ class CalculatorM1(Calculator):
     def _left_associated_unary(self) -> int | float:
         return self._process_unary_operations(self._pow)
 
-    def _primary(self): # -> int | float
+    def _primary(self):  # -> int | float
         match (token := self._current_token()).type:
             case TOKEN_TYPES.NUM:
                 self._next()
